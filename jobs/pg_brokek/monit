@@ -1,0 +1,5 @@
+check process pg_broker
+  with pidfile /var/vcap/sys/run/pg_broker/pg_broker.pid
+  start program "/var/vcap/jobs/pg_broker/bin/monit_debugger pg_broker_ctl '/var/vcap/jobs/pg_broker/bin/pg_broker_ctl start'"
+  stop program "/var/vcap/jobs/pg_broker/bin/monit_debugger pg_broker_ctl '/var/vcap/jobs/pg_broker/bin/pg_broker_ctl stop'"
+  group vcap

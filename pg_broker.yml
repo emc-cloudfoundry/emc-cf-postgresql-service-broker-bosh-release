@@ -1,0 +1,77 @@
+---
+name: pg_broker_chris
+director_uuid: 26bcf319-3560-4c90-a189-b21518d5736e
+
+releases:
+- name: &release_name emc-cf-postgresql-service-broker-bosh-release
+  version: 0+dev.2
+
+compilation:
+  workers: 1
+  cloud_properties:
+    cpu: 2
+    disk: 3000
+    ram: 4096
+  network: default
+  reuse_compilation_vms: true
+
+networks:
+- name: default
+  subnets:
+  - cloud_properties:
+      fds: unlimited
+      name: VM Network VLAN752
+    dns:
+    - 10.8.0.13
+    gateway: 10.8.52.1
+    range: 10.8.52.0/24
+    reserved:
+    - 10.8.52.2 - 10.8.52.3
+    - 10.8.52.8 - 10.8.52.81
+    - 10.8.52.84 - 10.8.52.254
+    static:
+    - 10.8.52.82
+
+update:
+  canary_watch_time: 15000 - 40000
+  update_watch_time: 15000 - 40000
+  max_in_flight: 1
+  max_errors: 1
+  canaries: 1
+
+resource_pools:
+- name: pg
+  network: default
+  stemcell:
+    name: bosh-vsphere-esxi-ubuntu-trusty-go_agent-hardened
+    version: 2732-1
+  size: 1
+  cloud_properties:
+    cpu: 2
+    ram: 2048
+    disk: 5000
+
+jobs:
+- name: service
+  templates:
+  - name: pg_broker
+    release: *release_name
+  instances: 1
+  resource_pool: pg
+  persistent_disk: 10000
+  networks:
+  - name: default
+    static_ips:
+    - 10.8.52.82
+
+properties:
+  pg_broker:
+    service_id:
+    service_name: 
+    dev_plan_id:
+    prod_plan_id:
+    db_host: 10.8.52.80
+    db_port: 9999
+    db_user:
+      name: pgsql
+      password: changeme

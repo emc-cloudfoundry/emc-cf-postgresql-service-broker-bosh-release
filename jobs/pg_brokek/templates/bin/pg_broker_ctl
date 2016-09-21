@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -e # exit immediately if a simple command exits with a non-zero status
+set -u # report the usage of uninitialized variables
+
+ulimit -n 131072
+# Setup env vars and folders for the webapp_ctl script
+source /var/vcap/jobs/pg_broker/helpers/ctl_setup.sh 'pg_broker'
+
+export JAVA_HOME=/var/vcap/packages/java/jre1.8.0_45
+export PATH=$PATH:/var/vcap/packages/java/jre1.8.0_45/bin
+
+
+pg_broker_war_version=<%=properties.pg_broker.version%>
+JETTY_JAR=/var/vcap/packages/jetty/jetty-runner-8.1.0.RC5.jar
+PG_BROKER_WAR=/var/vcap/packages/pg_broker/emc-cf-postgresql-broker/build/libs/emc-cf-postgresql-broker-$pg_broker_war_version.war
+
+export LANG=en_US.UTF-8
+
+case $1 in
+
+  start)
+    pid_guard $PIDFILE $JOB_NAME
+
+    exec java -jar $JETTY_JAR $PG_BROKER_WAR \
+             >$LOG_DIR/$JOB_NAME.stdout.log \
+             2>$LOG_DIR/$JOB_NAME.stderr.log &
+
+#!/usr/bin/env bash
+    # store pid in $PIDFILE
+    echo $! > $PIDFILE
+    ;;
+
+  stop)
+    kill_and_wait $PIDFILE
+
+    ;;
+  *)
+    echo "Usage: pg_broker_ctl {start|stop}"
+
+    ;;
+
+esac
+exit 0

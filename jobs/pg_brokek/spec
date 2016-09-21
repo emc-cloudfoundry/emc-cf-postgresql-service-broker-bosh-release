@@ -1,0 +1,38 @@
+---
+name: pg_broker
+packages:
+- java
+- jetty
+- pg_broker
+templates:
+  bin/pg_broker_ctl: bin/pg_broker_ctl
+  bin/monit_debugger: bin/monit_debugger
+  data/properties.sh.erb: data/properties.sh
+  helpers/ctl_setup.sh: helpers/ctl_setup.sh
+  helpers/ctl_utils.sh: helpers/ctl_utils.sh
+  conf/pg_broker.properties: conf/pg_broker.properties
+properties:
+  pg_broker.version:
+    default: "1.0.0-SNAPSHOT"
+    description: "the verison of postgresql service broker"
+  pg_broker.service_id:
+    description: "the service definition id of service broker, this id will be registered into CloudFoundry"
+    default: none
+  pg_broker.service_name:
+    description: "the service definition name of service broker, this name will be registered into CloudFoundry"
+    default: none
+  pg_broker.dev_plan_id:
+    description: "the develop plan id of service broker, this id will be registered into CloudFoundry"
+    default: none
+  pg_broker.prod_plan_id:
+    description: "the production plan id of service broker, this name will be registered into CloudFoundry"
+    default: none
+  pg_broker.db_host:
+    description: "hostname or IP for Postgresql instance"
+  pg_broker.db_port:
+    description: "port number for Postgresql instance"
+  pg_broker.db_user.name:
+    description: "Postgresql User"
+  pg_broker.db_user.password:
+    description: "Postgresql Password"
+

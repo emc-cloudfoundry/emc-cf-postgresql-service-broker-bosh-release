@@ -1,0 +1,69 @@
+apply plugin: 'war'
+apply plugin: 'jetty'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+version = '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    // maven { url mavenRepo }
+    mavenLocal()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile ("org.springframework:spring-context:${springVersion}") {
+        exclude group:"commons-logging", module:"commons-logging"
+    }
+    compile ("org.springframework:spring-webmvc:${springVersion}")
+    compile ("org.springframework:spring-web:${springVersion}")
+    compile ("org.springframework.security:spring-security-web:${springSecurityVersion}")
+    compile ("org.springframework.security:spring-security-config:${springSecurityVersion}")
+
+    compile("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
+    compile("com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}")
+    compile("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+
+    compile "org.slf4j:slf4j-api:${slf4jVersion}"
+    runtime "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+    runtime "org.slf4j:slf4j-log4j12:${slf4jVersion}"
+    runtime ("log4j:log4j:${log4jVersion}") {
+        exclude group:"javax.mail", module:"mail"
+        exclude group:"javax.jms", module:"jms"
+        exclude group:"com.sun.jdmk", module:"jmxtools"
+        exclude group:"com.sun.jmx", module:"jmxri"
+    }
+
+    compile "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    compile "javax.servlet.jsp:jsp-api:${jspApiVersion}"
+    compile "javax.servlet:jstl:${jstlVersion}"
+
+    //compile "org.hibernate:hibernate-validator:${hibernateValidatorVersion}"
+
+    compile "org.springframework:spring-jdbc:${springVersion}"
+    compile "org.postgresql:postgresql:9.4-1201-jdbc41"
+    compile "com.google.code.gson:gson:2.3.1"
+
+    compile name: 'spring-service-broker-2.0.0-RELEASE'
+
+    testCompile "org.hamcrest:hamcrest-all:${hamcrestVersion}"
+    testCompile "junit:junit:${junitVersion}"
+    testCompile "org.mockito:mockito-all:${mockitoVersion}"
+    testCompile "org.springframework:spring-test:${springVersion}"
+    testCompile "com.jayway.jsonpath:json-path:${jsonpathVersion}"
+}
+
+//task copyWar (dependsOn: war) {
+//    copy {
+//        from "build/libs"
+//        into "${pgBoshReleaseBlob}"
+//        include "*.war"
+//    }
+//}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.6'
+}
